@@ -3,7 +3,7 @@ import random
 BOARD_WIDTH = 3
 BOARD_HEIGHT = 3
 
-def blank_board():
+def new_board():
     board = []
     for x in range(0, BOARD_WIDTH):
         column = []
@@ -46,8 +46,6 @@ def get_all_line_co_ords():
     ]
     return cols + rows + diagonals
 
-
-
 def render(board):
     rows = []
     for y in range(0, BOARD_HEIGHT):
@@ -86,20 +84,17 @@ def is_board_full(board):
     return True
 
 
-def play(player_x_function, player_o_function):
-    players = [
-        (player_x_function, 'X'),
-        (player_o_function, 'O'),
-    ]
+def play():
+    players = ['X', 'O']
 
     turn_number = 0
-    board = blank_board()
+    board = new_board()
     while True:
-        player_function, player_symbol = players[turn_number % 2]
+        current_player = players[turn_number % 2]
         render(board)
 
-        move_co_ords = player_function(board, player_symbol)
-        make_move(player_symbol, board, move_co_ords)
+        move_co_ords = get_move()
+        make_move(current_player, board, move_co_ords)
 
         winner = get_winner(board)
         if winner is not None:
@@ -114,75 +109,10 @@ def play(player_x_function, player_o_function):
 
         turn_number += 1
 
-
-def human_player(board, who_am_i):
-    x_co_ord = int(raw_input("X"))
-    y_co_ord = int(raw_input("Y"))
+def get_move():
+    x_co_ord = int(raw_input("What is your X co-ordinate?: "))
+    y_co_ord = int(raw_input("What is your Y co-ordinate?: "))
+    print ""
     return (x_co_ord, y_co_ord)
 
-def random_ai(board, who_am_i):
-    return random_move(board)
-
-
-def random_move(board):
-    empty_co_ords = []
-    for x in range(0, BOARD_WIDTH):
-        for y in range(0, BOARD_HEIGHT):
-            if board[x][y] is None:
-                empty_co_ords.append((x, y))
-    return random.choice(empty_co_ords)
-
-def opponent(who_am_i):
-    if who_am_i == 'X':
-        return 'O'
-    else:
-        return 'X'
-
-def finds_own_winning_moves_ai(board, who_am_i):
-    my_winning_move = find_winning_move(board, who_am_i)
-    if my_winning_move:
-        return my_winning_move
-
-    return random_move(board)
-
-def blocks_their_winning_moves_ai(board, who_am_i):
-    their_winning_move = find_winning_move(board, opponent(who_am_i))
-    if their_winning_move:
-        return their_winning_move
-
-    return random_move(board)
-
-def finds_all_winning_moves_ai(board, who_am_i):
-    my_winning_move = find_winning_move(board, who_am_i)
-    if my_winning_move:
-        return my_winning_move
-
-    their_winning_move = find_winning_move(board, opponent(who_am_i))
-    if their_winning_move:
-        return their_winning_move
-
-    return random_move(board)
-
-def find_winning_move(board, who_am_i):
-    all_line_co_ords = get_all_line_co_ords()
-
-    for line in all_line_co_ords:
-        n_me = 0
-        n_them = 0
-        n_blank = 0
-        last_blank_co_ord = None
-
-        for (x, y) in line:
-            value = board[x][y]
-            if value == who_am_i:
-                n_me += 1
-            elif value is None:
-                n_blank += 1
-                last_blank_co_ord = (x, y)
-            else:
-                n_them += 1
-
-        if n_me == 2 and n_blank == 1:
-            return last_blank_co_ord
-
-play(finds_all_winning_moves_ai, blocks_their_winning_moves_ai)
+play()
