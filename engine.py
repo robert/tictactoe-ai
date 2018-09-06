@@ -84,17 +84,20 @@ def is_board_full(board):
     return True
 
 
-def play():
-    players = ['X', 'O']
+def play(player1_f, player2_f):
+    players = [
+        ('X', player1_f),
+        ('O', player2_f),
+    ]
 
     turn_number = 0
     board = new_board()
     while True:
-        current_player = players[turn_number % 2]
+        current_player_id, current_player_f = players[turn_number % 2]
         render(board)
 
-        move_co_ords = get_move()
-        make_move(current_player, board, move_co_ords)
+        move_co_ords = current_player_f(board, current_player_id)
+        make_move(current_player_id, board, move_co_ords)
 
         winner = get_winner(board)
         if winner is not None:
@@ -108,11 +111,3 @@ def play():
             break
 
         turn_number += 1
-
-def get_move():
-    x_co_ord = int(raw_input("What is your X co-ordinate?: "))
-    y_co_ord = int(raw_input("What is your Y co-ordinate?: "))
-    print ""
-    return (x_co_ord, y_co_ord)
-
-play()
