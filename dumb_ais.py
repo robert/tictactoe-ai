@@ -22,7 +22,7 @@ def finds_own_winning_moves_ai(board, who_am_i):
         return _random_move(board)
 
 def blocks_their_winning_moves_ai(board, who_am_i):
-    their_winning_move = _find_winning_move(board, _opponent(who_am_i))
+    their_winning_move = _find_winning_move(board, utils.get_opponent(who_am_i))
     if their_winning_move:
         return their_winning_move
     else:
@@ -34,7 +34,7 @@ def finds_all_winning_moves_ai(board, who_am_i):
     if my_winning_move:
         return my_winning_move
 
-    their_winning_move = _find_winning_move(board, _opponent(who_am_i))
+    their_winning_move = _find_winning_move(board, utils.get_opponent(who_am_i))
     if their_winning_move:
         return their_winning_move
 
@@ -65,19 +65,8 @@ def _find_winning_move(board, who_am_i):
 
 
 def _random_move(board):
-    empty_co_ords = []
-    for x in range(0, BOARD_WIDTH):
-        for y in range(0, BOARD_HEIGHT):
-            if board[x][y] is None:
-                empty_co_ords.append((x, y))
-    return random.choice(empty_co_ords)
-
-
-def _opponent(who_am_i):
-    if who_am_i == 'X':
-        return 'O'
-    else:
-        return 'X'
+    legal_moves = utils.get_all_legal_moves(board)
+    return random.choice(legal_moves)
 
 
 def _get_all_line_co_ords():
