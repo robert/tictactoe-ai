@@ -1,5 +1,8 @@
 import random
 
+import heuristic_ais as ai
+import minimax_ai as mm
+
 BOARD_WIDTH = 3
 BOARD_HEIGHT = 3
 
@@ -83,20 +86,33 @@ def is_board_full(board):
                 return False
     return True
 
+def get_move(board, current_player_id, algorithm_name):
+    if algorithm_name == 'random_ai':
+        return ai.random_ai(board, current_player_id)
+    elif algorithm_name == 'finds_own_winning_move_ai':
+        return ai.finds_own_winning_moves_ai(board, current_player_id)
+    elif algorithm_name == 'finds_all_winning_moves_ai':
+        return ai.finds_all_winning_moves_ai(board, current_player_id)
+    elif algorithm_name == 'human_player':
+        return ai.human_player(board, current_player_id)
+    elif algorithm_name == 'minimax_ai':
+        return mm.minimax_ai(board, current_player_id)
+    else:
+        raise Exception("Unknown algorithm_name: " + algorithm_name)
 
-def play(player1_f, player2_f):
+def play(p1_name, p2_name):
     players = [
-        ('X', player1_f),
-        ('O', player2_f),
+        ('X', p1_name),
+        ('O', p2_name),
     ]
 
     turn_number = 0
     board = new_board()
     while True:
-        current_player_id, current_player_f = players[turn_number % 2]
+        current_player_id, current_player_name = players[turn_number % 2]
         render(board)
 
-        move_co_ords = current_player_f(board, current_player_id)
+        move_co_ords = get_move(board, current_player_id, current_player_name)
         make_move(current_player_id, board, move_co_ords)
 
         winner = get_winner(board)
